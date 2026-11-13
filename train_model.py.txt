@@ -1,0 +1,38 @@
+import tensorflow as tf
+
+from tensorflow.keras import layers, models
+
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+train_dir = 'dataset/train'
+
+datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+
+train_gen = datagen.flow_from_directory(train_dir, target_size=(224,224), batch_size=32, subset='training')
+
+val_gen = datagen.flow_from_directory(train_dir, target_size=(224,224), batch_size=32, subset='validation')
+
+base =
+
+tf.keras.applications.MobileNetV2(input_shape=(224,224,3), include_top=False, weights='imagenet')
+
+base.trainable = False
+
+model = models.Sequential([
+
+base,
+
+layers.GlobalAveragePooling2D(),
+
+layers.Dense(128, activation='relu'),
+
+layers.Dense(train_gen.num_classes, activation='softmax')
+
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+model.fit(train_gen, validation_data=val_gen, epochs=5)
+
+model.save('leaf_disease_model.h5')
+print
